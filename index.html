@@ -76,7 +76,7 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 0}
         <div class="form-group">
           <label for="publicCategory">Kategorie</label>
           <select id="publicCategory" name="Kategorie">
-            <option value="Kultur">Kultur</option><option value="Sport">Sport</option><option value="Feste & Feiern">Feste &amp; Feiern</option><option value="Musik">Musik</option><option value="Verein">Verein</option><option value="Sonstiges">Sonstiges</option>
+            <option value="Kultur">Kultur</option><option value="Sport">Sport</option><option value="Feste & Feiern">Feste &amp; Feiern</option><option value="Konzert">Konzert</option><option value="Sonstiges">Sonstiges</option>
           </select>
         </div>
         <div class="form-group">
@@ -92,9 +92,9 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 0}
           <input id="publicLocation" name="Ort" required placeholder="z. B. Festplatz Heimburg">
         </div>
         <div class="form-group full">
-          <label for="publicImage">Veranstaltungsbild (optional)</label>
-          <div class="filebox"><input id="publicImage" name="Bild" type="file" accept="image/jpeg,image/png,image/webp,image/gif"></div>
-          <div class="help">JPG, PNG, WEBP oder GIF · maximal 10 MB</div>
+          <label for="publicImage">Veranstaltungsbild <span class="required">*</span></label>
+          <div class="filebox"><input id="publicImage" name="Bild" type="file" accept="image/jpeg,image/png,image/webp,image/gif" required></div>
+          <div class="help">JPG, PNG, WEBP oder GIF · maximal 10 MB (Pflichtfeld)</div>
         </div>
         <div class="form-group full">
           <label for="publicDescription">Beschreibung (optional)</label>
@@ -139,6 +139,10 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 0}
     status.className = 'status show ' + type;
   }
   function validateForm() {
+    if (!fileInput.files.length) {
+      showStatus('Bitte wählen Sie ein Veranstaltungsbild aus.', 'error');
+      return false;
+    }
     if (fileInput.files.length) {
       const file = fileInput.files[0];
       const allowed = ['image/jpeg','image/png','image/webp','image/gif'];
@@ -168,17 +172,8 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 0}
     submitButton.textContent = '📩 Wird übermittelt …';
     showStatus('Ihre Angaben werden an die Veranstaltungsverwaltung übermittelt …', 'ok');
 
-    // Wenn kein Bild ausgewählt wurde, Deaktivieren des File-Inputs vor dem Absenden.
-    // Dadurch wird kein leeres Formularfeld mitgesendet und MAKE verarbeitet den Request problemlos.
-    if (!fileInput.files.length) {
-      fileInput.disabled = true;
-    }
-
     // Die bestehende Make-Webhook-Übermittlung per multipart/form-data und verstecktem iframe bleibt erhalten.
     HTMLFormElement.prototype.submit.call(form);
-
-    // Re-aktivieren des File-Inputs nach dem Absenden
-    fileInput.disabled = false;
 
     // Make-Webhooks geben nicht zwingend eine für den Browser auswertbare Antwort zurück.
     // Daher wie in der ursprünglichen Datei die Dankesmeldung nach kurzer Wartezeit anzeigen.
@@ -226,3 +221,4 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 0}
 </script>
 </body>
 </html>
+```[cite: 6]
