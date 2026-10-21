@@ -84,8 +84,8 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 0}
           <input id="publicStart" name="Beginn" type="time" required>
         </div>
         <div class="form-group">
-          <label for="publicEnd">Ende (optional)</label>
-          <input id="publicEnd" name="Ende" type="time">
+          <label for="publicEnd">Ende <span class="required">*</span></label>
+          <input id="publicEnd" name="Ende" type="time" required>
         </div>
         <div class="form-group full">
           <label for="publicLocation">Veranstaltungsort <span class="required">*</span></label>
@@ -167,8 +167,19 @@ footer{text-align:center;color:var(--muted);font-size:12px;margin:18px 0 0}
     submitButton.disabled = true;
     submitButton.textContent = '📩 Wird übermittelt …';
     showStatus('Ihre Angaben werden an die Veranstaltungsverwaltung übermittelt …', 'ok');
+
+    // Wenn kein Bild ausgewählt wurde, Deaktivieren des File-Inputs vor dem Absenden.
+    // Dadurch wird kein leeres Formularfeld mitgesendet und MAKE verarbeitet den Request problemlos.
+    if (!fileInput.files.length) {
+      fileInput.disabled = true;
+    }
+
     // Die bestehende Make-Webhook-Übermittlung per multipart/form-data und verstecktem iframe bleibt erhalten.
     HTMLFormElement.prototype.submit.call(form);
+
+    // Re-aktivieren des File-Inputs nach dem Absenden
+    fileInput.disabled = false;
+
     // Make-Webhooks geben nicht zwingend eine für den Browser auswertbare Antwort zurück.
     // Daher wie in der ursprünglichen Datei die Dankesmeldung nach kurzer Wartezeit anzeigen.
     submitTimer = window.setTimeout(() => {
